@@ -1,4 +1,4 @@
-# VoyageVerse 🎨
+# VoyageVerse
 
 AI-powered creator personal branding platform for travel storytellers and digital creators.
 
