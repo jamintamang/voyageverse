@@ -10,14 +10,15 @@ dotenv.config();
 
 const app = express();
 
+// Middleware
 app.use(cors());
 app.use(express.json());
 app.use(helmet());
 app.use(morgan("dev"));
 
-app.use("/auth", authRoutes);
+// Routes
+app.use("/api/auth", authRoutes);
 app.use("/ai", aiRoutes);
-
 
 app.get("/", (req, res) => {
   res.send("Welcome to VoyageVerse API");
