@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, setPersistence, browserLocalPersistence } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 
 // Firebase configuration
 const firebaseConfig = {
@@ -26,5 +27,8 @@ setPersistence(auth, browserLocalPersistence)
 
 // Get Firestore instance
 export const db = getFirestore(app);
+
+// Firebase Storage (media pipeline)
+export const storage = getStorage(app);
 
 export default app;

@@ -67,7 +67,7 @@ export const requireRole = (...allowedRoles) => {
       });
     }
 
-    const userRole = req.user.custom_claims?.role;
+    const userRole = req.user.role ?? req.user?.custom_claims?.role;
     
     if (!userRole || !allowedRoles.includes(userRole)) {
       return res.status(403).json({

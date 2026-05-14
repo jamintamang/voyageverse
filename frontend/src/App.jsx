@@ -1,103 +1,115 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import { useEffect } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./config/firebase.js";
 import { useAuth } from "./hooks/useAuth.js";
 
-// Auth pages
 import Login from "./pages/auth/Login.jsx";
 import Register from "./pages/auth/Register.jsx";
 import ForgotPassword from "./pages/auth/ForgotPassword.jsx";
 import ResetPassword from "./pages/auth/ResetPassword.jsx";
 
-// Protected route
-import ProtectedRoute from "./routes/ProtectedRoute.jsx";
+import ProtectedRoute, { RoleProtectedRoute } from "./routes/ProtectedRoute.jsx";
+import { MarketingLayout } from "./layouts/MarketingLayout.jsx";
+import { AppShellLayout } from "./layouts/AppShellLayout.jsx";
 
-/**
- * Main App component with routing
- */
+const HomePage = lazy(() => import("./pages/Home/HomePage.jsx"));
+const ExplorePage = lazy(() => import("./pages/Explore/ExplorePage.jsx"));
+const PublicProfilePage = lazy(() => import("./pages/Profile/PublicProfilePage.jsx"));
+
+const DashboardPage = lazy(() => import("./pages/Dashboard/DashboardPage.jsx"));
+const JournalPage = lazy(() => import("./pages/Journal/JournalPage.jsx"));
+const TravelMapPage = lazy(() => import("./pages/Map/TravelMapPage.jsx"));
+const GalleryPage = lazy(() => import("./pages/Gallery/GalleryPage.jsx"));
+const AIStudioPage = lazy(() => import("./pages/AI/AIStudioPage.jsx"));
+const AnalyticsPage = lazy(() => import("./pages/Analytics/AnalyticsPage.jsx"));
+const BrandMarketplacePage = lazy(() => import("./pages/Marketplace/BrandMarketplacePage.jsx"));
+const SettingsPage = lazy(() => import("./pages/Settings/SettingsPage.jsx"));
+const NotificationsPage = lazy(() => import("./pages/Notifications/NotificationsPage.jsx"));
+const AdminPage = lazy(() => import("./pages/Admin/AdminPage.jsx"));
+
+function PageLoader() {
+  return (
+    <div className="flex min-h-[50vh] items-center justify-center text-sm text-[var(--vv-muted)]">
+      Loading experience…
+    </div>
+  );
+}
+
 function App() {
-  const { setUser, setToken, logout } = useAuth();
+  const { setUser, setToken, logout, setSessionResolved } = useAuth();
 
-  // Sync Firebase auth state with Zustand store
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      if (firebaseUser) {
-        // User logged in - get ID token and sync with store
-        const idToken = await firebaseUser.getIdToken();
-        const decodedToken = await firebaseUser.getIdTokenResult();
+      try {
+        if (firebaseUser) {
+          const idToken = await firebaseUser.getIdToken();
+          const decodedToken = await firebaseUser.getIdTokenResult();
+          const role = decodedToken.claims.role || "Creator";
 
-        setUser({
-          uid: firebaseUser.uid,
-          email: firebaseUser.email,
-          displayName: firebaseUser.displayName,
-          role: decodedToken.claims.role || "Creator",
-          accountType: decodedToken.claims.role || "Creator",
-        });
-
-        setToken(idToken);
-      } else {
-        // User logged out
-        logout();
+          setUser({
+            uid: firebaseUser.uid,
+            email: firebaseUser.email,
+            displayName: firebaseUser.displayName,
+            role,
+            accountType: role,
+          });
+          setToken(idToken);
+        } else {
+          logout();
+        }
+      } finally {
+        setSessionResolved(true);
       }
     });
 
     return unsubscribe;
-  }, [setUser, setToken, logout]);
+  }, [setUser, setToken, logout, setSessionResolved]);
 
   return (
     <Router>
-      <Routes>
-        {/* Authentication routes */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/reset-password" element={<ResetPassword />} />
+      <Suspense fallback={<PageLoader />}>
+        <Routes>
+          <Route element={<MarketingLayout />}>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/explore" element={<ExplorePage />} />
+            <Route path="/u/:username" element={<PublicProfilePage />} />
+          </Route>
 
-        {/* Protected routes */}
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white flex items-center justify-center">
-                <div className="text-center">
-                  <h1 className="text-4xl font-bold mb-4">Dashboard</h1>
-                  <p className="text-white/70 mb-8">
-                    Welcome to VoyageVerse Dashboard (Coming Soon)
-                  </p>
-                  <button
-                    onClick={() => logout()}
-                    className="px-6 py-3 bg-red-600 hover:bg-red-700 rounded-lg font-semibold transition"
-                  >
-                    Logout
-                  </button>
-                </div>
-              </div>
-            </ProtectedRoute>
-          }
-        />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
 
-        {/* Root route */}
-        <Route path="/" element={<Navigate to="/login" replace />} />
+          <Route
+            element={
+              <ProtectedRoute>
+                <AppShellLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/journal" element={<JournalPage />} />
+            <Route path="/map" element={<TravelMapPage />} />
+            <Route path="/gallery" element={<GalleryPage />} />
+            <Route path="/ai-studio" element={<AIStudioPage />} />
+            <Route path="/analytics" element={<AnalyticsPage />} />
+            <Route path="/marketplace" element={<BrandMarketplacePage />} />
+            <Route path="/notifications" element={<NotificationsPage />} />
+            <Route path="/settings" element={<SettingsPage />} />
+            <Route
+              path="/admin"
+              element={
+                <RoleProtectedRoute roles={["Admin"]}>
+                  <AdminPage />
+                </RoleProtectedRoute>
+              }
+            />
+          </Route>
 
-        {/* 404 fallback */}
-        <Route
-          path="*"
-          element={
-            <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white flex items-center justify-center">
-              <div className="text-center">
-                <h1 className="text-4xl font-bold mb-4">404 - Page Not Found</h1>
-                <a
-                  href="/login"
-                  className="inline-block px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold transition"
-                >
-                  Go to Login
-                </a>
-              </div>
-            </div>
-          }
-        />
-      </Routes>
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </Suspense>
     </Router>
   );
 }

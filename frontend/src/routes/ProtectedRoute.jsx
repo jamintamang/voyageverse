@@ -6,10 +6,10 @@ import { useAuth } from "../hooks/useAuth.js";
  * Protected Route component - Guards routes from unauthenticated users
  */
 export const ProtectedRoute = ({ children, requiredRoles = null }) => {
-  const { isAuthenticated, userRole, loading } = useAuth();
+  const { isAuthenticated, userRole, loading, sessionResolved } = useAuth();
 
-  // Show loading spinner while checking authentication
-  if (loading) {
+  // Wait for Firebase auth to finish initializing
+  if (!sessionResolved || loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center">
         <motion.div
@@ -38,9 +38,9 @@ export const ProtectedRoute = ({ children, requiredRoles = null }) => {
  * Role Protected Route - More granular role-based access control
  */
 export const RoleProtectedRoute = ({ children, roles = [] }) => {
-  const { isAuthenticated, userRole, loading } = useAuth();
+  const { isAuthenticated, userRole, loading, sessionResolved } = useAuth();
 
-  if (loading) {
+  if (!sessionResolved || loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center">
         <motion.div

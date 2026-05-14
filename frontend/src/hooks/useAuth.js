@@ -7,6 +7,8 @@ export const useAuth = () => {
   // State
   const user = useAuthStore((state) => state.user);
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const sessionResolved = useAuthStore((state) => state.sessionResolved);
+  const setSessionResolved = useAuthStore((state) => state.setSessionResolved);
   const loading = useAuthStore((state) => state.loading);
   const error = useAuthStore((state) => state.error);
   const userRole = useAuthStore((state) => state.userRole);
@@ -27,6 +29,8 @@ export const useAuth = () => {
     // State
     user,
     isAuthenticated,
+    sessionResolved,
+    setSessionResolved,
     loading,
     error,
     userRole,

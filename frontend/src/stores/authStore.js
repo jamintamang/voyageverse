@@ -12,10 +12,13 @@ export const useAuthStore = create(
       user: null,
       isAuthenticated: false,
       loading: false,
+      sessionResolved: false,
       error: null,
       userRole: null,
       token: null,
       rememberMe: false,
+
+      setSessionResolved: (resolved) => set({ sessionResolved: resolved }),
 
       // Actions
       setUser: (user) =>
@@ -41,6 +44,7 @@ export const useAuthStore = create(
           token: null,
           error: null,
           rememberMe: false,
+          sessionResolved: true,
         }),
 
       clearError: () => set({ error: null }),

@@ -11,14 +11,15 @@ import { useAuth } from "../../hooks/useAuth.js";
  */
 export const Login = () => {
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, sessionResolved } = useAuth();
 
   // Redirect if already logged in
   useEffect(() => {
+    if (!sessionResolved) return;
     if (isAuthenticated) {
       navigate("/dashboard");
     }
-  }, [isAuthenticated, navigate]);
+  }, [sessionResolved, isAuthenticated, navigate]);
 
   const handleLoginSuccess = () => {
     navigate("/dashboard");

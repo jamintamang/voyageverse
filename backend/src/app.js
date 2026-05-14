@@ -5,6 +5,9 @@ import helmet from "helmet";
 import morgan from "morgan";
 import authRoutes from "./routes/authRoutes.js";
 import aiRoutes from "./routes/aiRoutes.js";
+import analyticsRoutes from "./routes/analyticsRoutes.js";
+import collaborationRoutes from "./routes/collaborationRoutes.js";
+import adminRoutes from "./routes/adminRoutes.js";
 
 dotenv.config();
 
@@ -18,7 +21,10 @@ app.use(morgan("dev"));
 
 // Routes
 app.use("/api/auth", authRoutes);
-app.use("/ai", aiRoutes);
+app.use("/api/ai", aiRoutes);
+app.use("/api/analytics", analyticsRoutes);
+app.use("/api/collaborations", collaborationRoutes);
+app.use("/api/admin", adminRoutes);
 
 app.get("/", (req, res) => {
   res.send("Welcome to VoyageVerse API");

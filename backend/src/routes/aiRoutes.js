@@ -1,15 +1,16 @@
 import express from "express";
+import * as aiController from "../controllers/aiController.js";
+import { authMiddleware } from "../middleware/authMiddleware.js";
+import { aiLimiter } from "../middleware/aiRateLimit.js";
 
 const router = express.Router();
 
-router.post("/caption", async (req, res) => {
-  try {
-    res.json({
-      message: "AI caption route working",
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
+router.use(authMiddleware, aiLimiter);
+
+router.post("/caption", aiController.caption);
+router.post("/hashtags", aiController.hashtags);
+router.post("/bio", aiController.bio);
+router.post("/story", aiController.story);
+router.post("/embed", aiController.embed);
 
 export default router;

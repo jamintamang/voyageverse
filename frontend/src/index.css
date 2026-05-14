@@ -1,19 +1,171 @@
 @import "tailwindcss";
 
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --color-vv-bg: var(--vv-bg);
+  --color-vv-surface: var(--vv-surface);
+  --color-vv-muted: var(--vv-muted);
+  --color-vv-border: var(--vv-border);
+  --color-vv-text: var(--vv-text);
+  --color-vv-accent: #38bdf8;
+  --color-vv-violet: #a78bfa;
+  --color-vv-ember: #fb923c;
+}
+
+:root {
+  color-scheme: dark;
+  --vv-bg: #07080d;
+  --vv-surface: rgba(255, 255, 255, 0.04);
+  --vv-muted: rgba(255, 255, 255, 0.55);
+  --vv-border: rgba(255, 255, 255, 0.08);
+  --vv-text: #f8fafc;
+  --vv-glow: rgba(56, 189, 248, 0.35);
+}
+
+html.light {
+  color-scheme: light;
+  --vv-bg: #f4f6fb;
+  --vv-surface: rgba(15, 23, 42, 0.04);
+  --vv-muted: rgba(15, 23, 42, 0.55);
+  --vv-border: rgba(15, 23, 42, 0.08);
+  --vv-text: #0f172a;
+  --vv-glow: rgba(99, 102, 241, 0.25);
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background: var(--vv-bg);
+  color: var(--vv-text);
+  -webkit-font-smoothing: antialiased;
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
 /* Grid pattern background */
 .bg-grid-pattern {
-  background-image: 
-    linear-gradient(0deg, transparent 24%, rgba(255, 255, 255, 0.05) 25%, rgba(255, 255, 255, 0.05) 26%, transparent 27%, transparent 74%, rgba(255, 255, 255, 0.05) 75%, rgba(255, 255, 255, 0.05) 76%, transparent 77%, transparent),
-    linear-gradient(90deg, transparent 24%, rgba(255, 255, 255, 0.05) 25%, rgba(255, 255, 255, 0.05) 26%, transparent 27%, transparent 74%, rgba(255, 255, 255, 0.05) 75%, rgba(255, 255, 255, 0.05) 76%, transparent 77%, transparent);
+  background-image: linear-gradient(
+      0deg,
+      transparent 24%,
+      rgba(255, 255, 255, 0.05) 25%,
+      rgba(255, 255, 255, 0.05) 26%,
+      transparent 27%,
+      transparent 74%,
+      rgba(255, 255, 255, 0.05) 75%,
+      rgba(255, 255, 255, 0.05) 76%,
+      transparent 77%,
+      transparent
+    ),
+    linear-gradient(
+      90deg,
+      transparent 24%,
+      rgba(255, 255, 255, 0.05) 25%,
+      rgba(255, 255, 255, 0.05) 26%,
+      transparent 27%,
+      transparent 74%,
+      rgba(255, 255, 255, 0.05) 75%,
+      rgba(255, 255, 255, 0.05) 76%,
+      transparent 77%,
+      transparent
+    );
   background-size: 50px 50px;
 }
 
-/* Smooth scrolling */
-html {
-  scroll-behavior: smooth;
+html.light .bg-grid-pattern {
+  background-image: linear-gradient(
+      0deg,
+      transparent 24%,
+      rgba(15, 23, 42, 0.06) 25%,
+      rgba(15, 23, 42, 0.06) 26%,
+      transparent 27%,
+      transparent 74%,
+      rgba(15, 23, 42, 0.06) 75%,
+      rgba(15, 23, 42, 0.06) 76%,
+      transparent 77%,
+      transparent
+    ),
+    linear-gradient(
+      90deg,
+      transparent 24%,
+      rgba(15, 23, 42, 0.06) 25%,
+      rgba(15, 23, 42, 0.06) 26%,
+      transparent 27%,
+      transparent 74%,
+      rgba(15, 23, 42, 0.06) 75%,
+      rgba(15, 23, 42, 0.06) 76%,
+      transparent 77%,
+      transparent
+    );
 }
 
-/* Custom scrollbar */
+.glass-panel {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.08),
+    rgba(255, 255, 255, 0.02)
+  );
+  border: 1px solid var(--vv-border);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+html.light .glass-panel {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.75),
+    rgba(255, 255, 255, 0.45)
+  );
+}
+
+.gradient-border {
+  position: relative;
+}
+.gradient-border::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  border-radius: inherit;
+  background: linear-gradient(120deg, #38bdf8, #a78bfa, #fb923c);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.text-gradient {
+  background: linear-gradient(120deg, #e0f2fe, #c4b5fd, #fed7aa);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+html.light .text-gradient {
+  background: linear-gradient(120deg, #0369a1, #5b21b6, #c2410c);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+/* Lenis */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+/* Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -30,4 +182,17 @@ html {
 
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.3);
+}
+
+html.light ::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.06);
+}
+
+html.light ::-webkit-scrollbar-thumb {
+  background: rgba(15, 23, 42, 0.2);
+}
+
+.leaflet-container {
+  font-family: var(--font-sans);
+  border-radius: 1rem;
 }

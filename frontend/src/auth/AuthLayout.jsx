@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 
 /**
  * Premium Auth Layout with glassmorphism design
@@ -49,6 +50,11 @@ export const AuthLayout = ({ children, title, subtitle }) => {
         >
           {/* Glassmorphism container */}
           <div className="backdrop-blur-xl bg-white/10 rounded-2xl border border-white/20 p-8 shadow-2xl">
+            <div className="mb-6 text-center">
+              <Link to="/" className="text-xs font-semibold uppercase tracking-[0.2em] text-white/60 hover:text-white">
+                ← VoyageVerse home
+              </Link>
+            </div>
             {/* Header */}
             {(title || subtitle) && (
               <motion.div
